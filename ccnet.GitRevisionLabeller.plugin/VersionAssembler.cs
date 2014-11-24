@@ -1,7 +1,8 @@
-﻿using ThoughtWorks.CruiseControl.Core;
+﻿using System.Linq;
+using ThoughtWorks.CruiseControl.Core;
 using ThoughtWorks.CruiseControl.Remote;
 
-namespace CcNet.Labeller
+namespace ccnet.GitRevisionLabeller.plugin
 {
     internal static class VersionAssembler
     {
@@ -21,11 +22,13 @@ namespace CcNet.Labeller
             var previousVersion = resultFromLastBuild.LastSuccessfulIntegrationLabel;
             var parts = previousVersion.Split('.');
 
-            int previousRebuildNumber;
-            int.TryParse(parts[3], out previousRebuildNumber);
-
-            int previousRevision;
-            int.TryParse(parts[2], out previousRevision);
+            int previousRebuildNumber = 0;
+            int previousRevision = 0;
+            if (parts.Length == 4)
+            {
+                int.TryParse(parts[3], out previousRebuildNumber);
+                int.TryParse(parts[2], out previousRevision);
+            }
 
             if (((resultFromLastBuild.LastIntegrationStatus == IntegrationStatus.Success) || incrementOnFailure) && (gitCheckinCount == previousRevision))
             {

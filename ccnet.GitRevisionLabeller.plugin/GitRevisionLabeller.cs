@@ -6,7 +6,7 @@ using Exortech.NetReflector;
 using ThoughtWorks.CruiseControl.Core;
 using ThoughtWorks.CruiseControl.Core.Util;
 
-namespace CcNet.Labeller
+namespace ccnet.GitRevisionLabeller.plugin
 {
     /// <summary>
     /// Generates the CCNet label. The resultant label is accessible from 
@@ -35,7 +35,6 @@ namespace CcNet.Labeller
             Major = 1;
             Minor = 0;
         }
-        #region Properties
 
         /// <summary>
         /// Gets or sets the path to the Git executable.
@@ -75,10 +74,6 @@ namespace CcNet.Labeller
         /// <value>The minor version number.</value>
         [ReflectorProperty("minor", Required = false)]
         public int Minor { get; set; }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         /// Runs the task, given the specified <see cref="IIntegrationResult"/>, in the specified <see cref="IProject"/>.
@@ -130,8 +125,8 @@ namespace CcNet.Labeller
         {
             var buffer = new ProcessArgumentBuilder();
 
+            // use the working dirs current branch for the hash rather than the origin to work with branches
             buffer.AddArgument("log");
-            buffer.AddArgument("origin/master");
             buffer.AddArgument("--date-order");
             buffer.AddArgument("-1");
             buffer.AddArgument("--pretty=format:'%H%n%P%n%T'");
@@ -181,7 +176,5 @@ namespace CcNet.Labeller
         {
             return result.BaseFromWorkingDirectory(WorkingDirectory);
         }
-
-        #endregion
     }
 }
